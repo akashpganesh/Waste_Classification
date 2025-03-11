@@ -1,0 +1,31 @@
+Item,Category,Subcategory
+aerosol_cans,Recyclable Waste,Metal
+aluminum_food_cans,Recyclable Waste,Metal
+aluminum_soda_cans,Recyclable Waste,Metal
+cardboard_boxes,Recyclable Waste,Paper & Cardboard
+cardboard_packaging,Recyclable Waste,Paper & Cardboard
+clothing,Recyclable Waste,Other
+coffee_grounds,Organic Waste,Organic
+disposable_plastic_cutlery,Recyclable Waste,Plastic
+eggshells,Organic Waste,Organic
+food_waste,Organic Waste,Organic
+glass_beverage_bottles,Recyclable Waste,Glass
+glass_cosmetic_containers,Recyclable Waste,Glass
+glass_food_jars,Recyclable Waste,Glass
+magazines,Recyclable Waste,Paper & Cardboard
+newspaper,Recyclable Waste,Paper & Cardboard
+office_paper,Recyclable Waste,Paper & Cardboard
+paper_cups,Recyclable Waste,Paper & Cardboard
+plastic_cup_lids,Recyclable Waste,Plastic
+plastic_detergent_bottles,Recyclable Waste,Plastic
+plastic_food_containers,Recyclable Waste,Plastic
+plastic_shopping_bags,Recyclable Waste,Plastic
+plastic_soda_bottles,Recyclable Waste,Plastic
+plastic_straws,Recyclable Waste,Plastic
+plastic_trash_bags,Recyclable Waste,Plastic
+plastic_water_bottles,Recyclable Waste,Plastic
+shoes,Recyclable Waste,Other
+steel_food_cans,Recyclable Waste,Metal
+styrofoam_cups,Recyclable Waste,Other
+styrofoam_food_containers,Recyclable Waste,Other
+tea_bags,Organic Waste,Organic
