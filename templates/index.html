@@ -1,42 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waste Classification</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Waste Classification</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #1a1a2e;
+      color: #eaeaea;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: #16213e;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      width: 100%;
+      max-width: 500px;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 16px;
+      opacity: 0.8;
+      margin-bottom: 15px;
+    }
+    .drop-area {
+      border: 2px dashed #eaeaea;
+      padding: 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .drop-area:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .preview {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .preview img {
+      width: 100px;
+      height: 100px;
+      border-radius: 8px;
+      display: none;
+    }
+    .button {
+      background: #0f3460;
+      color: #eaeaea;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 15px;
+      width: 100%;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+    .button:hover {
+      background: #1b4f72;
+    }
+    .result {
+      margin-top: 20px;
+      background: #0f3460;
+      padding: 15px;
+      border-radius: 8px;
+      display: none;
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-blue-500 to-indigo-600 min-h-screen flex flex-col items-center justify-center p-6">
-
-    <!-- Header Section -->
-    <div class="text-center text-white mb-6">
-        <h1 class="text-4xl font-extrabold drop-shadow-lg">Is This Recyclable?</h1>
-        <p class="text-lg mt-2 opacity-90">Upload an image to classify it as organic or recyclable.</p>
+<body>
+  <div class="container">
+    <h1>Is This Recyclable?</h1>
+    <p>Upload an image to classify it as organic or recyclable.</p>
+    <div id="dropArea" class="drop-area">
+      Drag & Drop an Image or Click to Upload
+      <input type="file" id="fileInput" hidden />
     </div>
-
-    <!-- Upload Section -->
-    <div class="bg-white/30 backdrop-blur-md p-6 rounded-lg shadow-xl w-full max-w-lg text-center">
-        <div id="dropArea" class="border-2 border-dashed border-white/50 p-6 rounded-lg cursor-pointer hover:bg-white/20 transition">
-            <p class="text-white font-semibold text-lg">Drag & Drop an Image or Click to Upload</p>
-            <input type="file" id="fileInput" class="hidden">
-        </div>
-
-        <!-- Image Preview -->
-        <div id="previewContainer" class="hidden mt-4">
-            <img id="previewImage" class="w-40 h-40 mx-auto rounded-lg shadow-lg opacity-0 transition-opacity duration-500">
-        </div>
-
-        <button id="uploadButton" class="mt-4 w-full bg-white text-indigo-600 font-semibold py-2 rounded-lg shadow-md hover:bg-gray-200 transition disabled:opacity-50" disabled>
-            Upload & Detect
-        </button>
+    <div id="previewContainer" class="preview">
+      <img id="previewImage" alt="Preview" />
     </div>
+    <button id="uploadButton" class="button" disabled>Upload & Detect</button>
+    <div id="resultContainer" class="result"></div>
+  </div>
+  <script>
+    const fileInput = document.getElementById("fileInput");
+    const dropArea = document.getElementById("dropArea");
+    const previewImage = document.getElementById("previewImage");
+    const uploadButton = document.getElementById("uploadButton");
+    const resultContainer = document.getElementById("resultContainer");
 
-    <!-- Result Section -->
-    <div id="resultContainer" class="hidden bg-white/30 backdrop-blur-md p-6 rounded-lg shadow-xl w-full max-w-lg mt-6 text-center">
-        <!-- <img id="resultImage" class="mt-4 w-40 h-40 mx-auto rounded-lg shadow-lg"> -->
-    </div>
+    dropArea.addEventListener("click", () => fileInput.click());
+    dropArea.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropArea.style.background = "rgba(255, 255, 255, 0.2)";
+    });
+    dropArea.addEventListener("dragleave", () => (dropArea.style.background = ""));
+    dropArea.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropArea.style.background = "";
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        fileInput.files = files;
+        showPreview(files[0]);
+      }
+    });
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files.length > 0) showPreview(fileInput.files[0]);
+    });
 
+    function showPreview(file) {
+      if (!file.type.startsWith("image/")) {
+        alert("Please upload an image file.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        previewImage.src = reader.result;
+        previewImage.style.display = "block";
+        uploadButton.disabled = false;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    uploadButton.addEventListener("click", async () => {
+      if (!fileInput.files.length) {
+        alert("No file selected.");
+        return;
+      }
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+      uploadButton.textContent = "Detecting...";
+      uploadButton.disabled = true;
+
+      try {
+        const response = await fetch("/predict", {
+          method: "POST",
+          body: formData,
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.probability >= 0.5) {
+            resultContainer.innerHTML = `<h3>Category: ${data.category || "Unknown"}</h3><br>
+              <p>Waste Type: ${data.subcategory || "Unknown"}</p>
+              <p>Label: ${data.predicted_class || "N/A"}</p>
+              <p>Confidence: ${(parseFloat(data.probability) * 100).toFixed(2)}%</p>`;
+          } else {
+            resultContainer.innerHTML = `<h3 style='color : red;'>Error : Can't Predict the Waste Type</h3>`;
+          }
+          resultContainer.style.display = "block";
+        } else {
+          alert("Failed to get a response from the server.");
+        }
+      } catch (error) {
+        alert("Error detecting waste category.");
+        console.error(error);
+      }
+      uploadButton.textContent = "Upload & Detect";
+      uploadButton.disabled = false;
+    });
+  </script>
 </body>
 </html>
